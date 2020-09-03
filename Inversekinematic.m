@@ -1,16 +1,16 @@
 
 
 function Theta=ik(pos)
-%D-H²ÎÊı
-a0=0;                 % [m]¸Ë³¤
-a1=184;             % [m]
-a2=600;             % [m]
-a3=114;             % [m]
+%D-Hå‚æ•°
+a0=0;                 % [m]æ†é•¿
+a1=0;                 % [m]
+a2=0;                 % [m]
+a3=0;                 % [m]
 a4=0;                 % [m]
 a5=0;                 % [m]
-% [d1,d2,d3,d5,d6]=deal(0);    % [rad]Á¬¸ËÆ«¾à
-d4=664;
-%Å·À­½Ç×ª»»ÎªĞı×ª¾ØÕó
+% [d1,d2,d3,d5,d6]=deal(0);    % [rad]è¿æ†åè·
+d4=0;
+%æ¬§æ‹‰è§’è½¬æ¢ä¸ºæ—‹è½¬çŸ©é˜µ
 x=pos(1);y=pos(2);z=pos(3);theta_x=(pos(4)*pi)/180;theta_y=(pos(5)*pi)/180;theta_z=(pos(6)*pi)/180;
 rotm=[cos(theta_y)*cos(theta_z),cos(theta_z)*sin(theta_x)*sin(theta_y)-cos(theta_x)*sin(theta_z),sin(theta_x)*sin(theta_z)+cos(theta_x)*cos(theta_z)*sin(theta_y);
       cos(theta_y)*sin(theta_z),cos(theta_x)*cos(theta_z)+sin(theta_x)*sin(theta_y)*sin(theta_z),cos(theta_x)*sin(theta_y)*sin(theta_z)-cos(theta_z)*sin(theta_x);
@@ -27,16 +27,16 @@ r31=rotm(3,1);
 r32=rotm(3,2);
 r33=rotm(3,3);
 zc=z;
-%6Öá»úÆ÷ÈËµÄÔË¶¯Ñ§Äæ½âÓĞ8×é£¬Êä³öµÄ½âÎª8ĞĞ6ÁĞµÄ¾ØÕó
+%6è½´æœºå™¨äººçš„è¿åŠ¨å­¦é€†è§£æœ‰8ç»„ï¼Œè¾“å‡ºçš„è§£ä¸º8è¡Œ6åˆ—çš„çŸ©é˜µ
 Theta=zeros(8,6);
 
 for i=1:2    
-    %¼ÆËãtheta1,Á½½â
+    %è®¡ç®—theta1,ä¸¤è§£
     Theta((i-1)*4+1,1) = atan2(yc,xc);
     Theta((i-1)*4+2,1) = atan2(yc,xc);
     Theta((i-1)*4+3,1) = pi+atan2(yc,xc);
     Theta((i-1)*4+4,1) = pi+atan2(yc,xc);
-    %½Ç¶ÈĞŞÕı
+    %è§’åº¦ä¿®æ­£
     Theta((i-1)*4+1,1)=AngleCorrection(Theta((i-1)*4+1,1));
     Theta((i-1)*4+2,1)=AngleCorrection(Theta((i-1)*4+2,1));
     Theta((i-1)*4+3,1)=AngleCorrection(Theta((i-1)*4+3,1));
@@ -44,13 +44,13 @@ for i=1:2
 end
 
 for i=1:2
-    %¼ÆËãtheta3£¬ÓĞ4¸ö½â
+    %è®¡ç®—theta3ï¼Œæœ‰4ä¸ªè§£
     c1 = cos(Theta((i-1)*2+1,1));
     s1 = sin(Theta((i-1)*2+1,1));
     k(i) =  xc*c1+yc*s1-a1 ;
     w(i) = (k(i)*k(i)+zc^2 -a2^2-a3^2-d4^2)/(2*a2);
     if(a3^2+d4^2-w(i)*w(i)<0)
-        %´ËÊ±theta3ËùÓĞ½â¾ù²»´æÔÚ
+        %æ­¤æ—¶theta3æ‰€æœ‰è§£å‡ä¸å­˜åœ¨
         for n=1:4
             Theta(n,3)=0;
             Theta(n+4,3)=0;
@@ -60,7 +60,7 @@ for i=1:2
         Theta((i-1)*2+2,3)=atan2(a3,d4)-atan2(w(i),-sqrt(a3^2+d4^2-w(i)*w(i)));
         Theta((2*i+3),3)=atan2(a3,d4)-atan2(w(i),sqrt(a3^2+d4^2-w(i)*w(i)));
         Theta((2*i+4),3)=atan2(a3,d4)-atan2(w(i),-sqrt(a3^2+d4^2-w(i)*w(i)));
-        %½Ç¶ÈĞŞÕı
+        %è§’åº¦ä¿®æ­£
         Theta((i-1)*2+1,3)=AngleCorrection(Theta((i-1)*2+1,3));
         Theta((i-1)*2+2,3)=AngleCorrection(Theta((i-1)*2+2,3));
         Theta((2*i+3),3)=AngleCorrection(Theta((2*i+3),3));
@@ -68,7 +68,7 @@ for i=1:2
     end
 end
 
-    %¼ÆËãtheta2,ÓĞ4¸ö½â(ÓĞÎÊÌâ)     
+    %è®¡ç®—theta2,æœ‰4ä¸ªè§£     
     for j=1:4
         c1 = cos(Theta(j,1));
         s1 = sin(Theta(j,1));
@@ -76,12 +76,12 @@ end
         s3 = sin(Theta(j,3));
         Theta(j,2) = atan2((-a3-a2*c3)*zc-(d4-a2*s3)*(c1*xc+s1*yc-a1),(a2*s3-d4)*zc+(a3+a2*c3)*(c1*xc+s1*yc-a1))-Theta(j,3);
         Theta(j+4,2) = Theta(j,2);
-         %½Ç¶ÈĞŞÕı
+         %è§’åº¦ä¿®æ­£
         Theta(j,2)=AngleCorrection(Theta(j,2));
         Theta(j+4,2)=AngleCorrection(Theta(j+4,2));
     end
     
-    %¼ÆËãtheta4ºÍ5,ÓĞ8¸ö½â
+    %è®¡ç®—theta4å’Œ5,æœ‰8ä¸ªè§£
     for k=1:4
         c1 = cos(Theta(k,1));
         s1 = sin(Theta(k,1));
@@ -93,7 +93,7 @@ end
         if( sin(Theta(k,5))~=0)
             Theta(k,4) = atan2(-r13*s1+r23*c1,-r13*c1*c23-r23*s1*c23+r33*s23);
             Theta(k+4,4) = Theta(k,4)+pi;
-             %½Ç¶ÈĞŞÕı
+             %è§’åº¦ä¿®æ­£
             Theta(k,4)=AngleCorrection(Theta(k,4));
             Theta(k+4,4)=AngleCorrection(Theta(k+4,4));
         else
@@ -103,7 +103,7 @@ end
     end
     
     for m=1:4
-        %¼ÆËãtheta6£¬ÓĞ8¸ö½â
+        %è®¡ç®—theta6ï¼Œæœ‰8ä¸ªè§£
         c1 = cos(Theta(m,1));
         s1 = sin(Theta(m,1));
         c23= cos(Theta(m,2))*cos(Theta(m,3))-sin(Theta(m,2))*sin(Theta(m,3));
@@ -112,7 +112,7 @@ end
         s4 = sin(Theta(m,4)) ;
         Theta(m,6) = atan2(r11*(-s4*c1*c23+s1*c4)+r21*(-s1*s4*c23-c1*c4)+r31*s4*s23,r12*(-c1*c23*s4+s1*c4)+r22*(-s1*s4*c23-c1*c4)+r32*s4*s23);
         Theta(m+4,6)=Theta(m,6)+pi;
-        %½Ç¶ÈĞŞÕı
+        %è§’åº¦ä¿®æ­£
         Theta(m,6)=AngleCorrection(Theta(m,6));
         Theta(m+4,6)=AngleCorrection(Theta(m+4,6));
     end
